@@ -50,4 +50,9 @@ QHash<int,QByteArray> DeviceList::roleNames() const
 void DeviceList::wol(const QString &mac)
 {
     qDebug() << "Wol" << mac;
+    try {
+        _wol.send(mac.toStdString());
+    } catch (std::exception &e) {
+        qWarning() << "Cannot send WOL packet" << e.what();
+    }
 }

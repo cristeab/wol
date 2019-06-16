@@ -1,6 +1,7 @@
 #pragma once
 
 #include "qmlhelpers.h"
+#include "wol.h"
 #include <QAbstractListModel>
 #include <QVector>
 
@@ -26,4 +27,5 @@ private:
         return ((0 <= idx) && (idx < _deviceInfo.size()));
     }
     QVector<DeviceInfo> _deviceInfo;
+    Wol _wol;
 };
