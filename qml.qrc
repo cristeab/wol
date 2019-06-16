@@ -5,5 +5,6 @@
         <file>img/cloud-on-off.svg</file>
         <file>img/trash-o.svg</file>
         <file>qml/Settings.qml</file>
+        <file>qml/MessageDialog.qml</file>
     </qresource>
 </RCC>

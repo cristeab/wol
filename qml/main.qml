@@ -3,12 +3,36 @@ import QtQuick.Controls 2.5
 import QtGraphicalEffects 1.12
 
 ApplicationWindow {
+    id: appWin
     visible: true
     width: 640
     height: 480
 
     Settings {
         id: settings
+    }
+
+    QtObject {
+        id: msgDlgProps
+        property string title: ""
+        property string text: ""
+        property bool okCancel: false
+        property var acceptCallback: null
+        property var cancelCallback: null
+        property int callbackArg: -1
+        function showInfo(title, msg) {
+            msgDlgProps.acceptCallback = null
+            msgDlgProps.cancelCallback = null
+            msgDlgProps.callbackArg = -1
+            msgDlgProps.title = title
+            msgDlgProps.text = msg
+            msgDlgLoader.item.visible = true
+        }
+    }
+    Loader {
+        id: msgDlgLoader
+        active: "" !== msgDlgProps.text
+        source: "qrc:/qml/MessageDialog.qml"
     }
 
     Column {
@@ -176,7 +200,14 @@ ApplicationWindow {
                 anchors.right: parent.right
                 color: SwipeDelegate.pressed ? Qt.darker("tomato", 1.1) : "tomato"
                 Column {
-                    SwipeDelegate.onClicked: listView.model.remove(index)
+                    SwipeDelegate.onClicked: {
+                        msgDlgProps.acceptCallback = listView.model.remove
+                        msgDlgProps.callbackArg = index
+                        msgDlgProps.cancelCallback = delegateControl.swipe.close
+                        msgDlgProps.title = qsTr("Remove item")
+                        msgDlgProps.text = qsTr("Are you sure you want to remove ") + friendlyName + qsTr(" from the list.")
+                        msgDlgLoader.item.visible = true
+                    }
                     anchors.fill: parent
                     spacing: 0
                     Item {
