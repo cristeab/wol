@@ -46,3 +46,8 @@ QHash<int,QByteArray> DeviceList::roleNames() const
     };
     return roles;
 }
+
+void DeviceList::wol(const QString &mac)
+{
+    qDebug() << "Wol" << mac;
+}
