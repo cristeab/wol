@@ -1,5 +1,6 @@
 import QtQuick 2.12
 import QtQuick.Controls 2.5
+import QtGraphicalEffects 1.12
 
 ApplicationWindow {
     visible: true
@@ -22,13 +23,41 @@ ApplicationWindow {
                 pointSize: 18
             }
         }
-        Image {
+        Item {
             anchors.horizontalCenter: wolLabel.horizontalCenter
-            source: "qrc:/img/cloud-on-off.svg"
-            fillMode: Image.PreserveAspectFit
             height: 50
             width: height
-            mipmap: true
+            Image {
+                id: wolImg
+                anchors.fill: parent
+                source: "qrc:/img/cloud-on-off.svg"
+                fillMode: Image.PreserveAspectFit
+                mipmap: true
+            }
+            ColorOverlay {
+                id: wolOverlay
+                visible: false
+                anchors.fill: wolImg
+                source: wolImg
+                color: "#80a9ffff"
+            }
+            Timer {
+                id: wolTimer
+                property int count: 0
+                interval: 500
+                running: false
+                triggeredOnStart: true
+                repeat: true
+                onTriggered: {
+                    wolTimer.count += 1
+                    if (wolTimer.count > 8) {
+                        wolTimer.count = 0
+                        wolTimer.running = false
+                    } else {
+                        wolOverlay.visible = !wolOverlay.visible
+                    }
+                }
+            }
         }
     }
     ListView {
@@ -37,6 +66,8 @@ ApplicationWindow {
             topMargin: 20
             bottom: parent.bottom
         }
+        clip: true
+        boundsBehavior: ListView.StopAtBounds
         width: parent.width
         model: deviceList
         delegate: Item {
@@ -88,7 +119,10 @@ ApplicationWindow {
             MouseArea {
                 id: delegateMouseArea
                 anchors.fill: parent
-                onClicked: deviceList.wol(macAddress)
+                onClicked: {
+                    wolTimer.running = true
+                    deviceList.wol(macAddress)
+                }
             }
         }
     }
