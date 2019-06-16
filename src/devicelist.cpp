@@ -56,3 +56,12 @@ void DeviceList::wol(const QString &mac)
         qWarning() << "Cannot send WOL packet" << e.what();
     }
 }
+
+void DeviceList::remove(int index)
+{
+    if (isValidIndex(index)) {
+        emit layoutAboutToBeChanged();
+        _deviceInfo.remove(index);
+        emit layoutChanged();
+    }
+}

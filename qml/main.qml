@@ -6,12 +6,17 @@ ApplicationWindow {
     visible: true
     width: 640
     height: 480
+
+    Settings {
+        id: settings
+    }
+
     Column {
         id: header
-        spacing: 20
+        spacing: settings.verticalMargin
         anchors {
             top: parent.top
-            topMargin: 20
+            topMargin: settings.verticalMargin
             horizontalCenter: parent.horizontalCenter
         }
         Label {
@@ -20,12 +25,12 @@ ApplicationWindow {
             text: qsTr("Wake on LAN")
             font {
                 bold: true
-                pointSize: 18
+                pointSize: settings.headerPointSize
             }
         }
         Item {
             anchors.horizontalCenter: wolLabel.horizontalCenter
-            height: 50
+            height: settings.buttonHeight
             width: height
             Image {
                 id: wolImg
@@ -36,10 +41,77 @@ ApplicationWindow {
             }
             ColorOverlay {
                 id: wolOverlay
-                visible: false
+                visible: true
                 anchors.fill: wolImg
                 source: wolImg
-                color: "#80a9ffff"
+                color: settings.buttonPressedColor
+            }
+        }
+    }
+    ListView {
+        id: listView
+        anchors {
+            top: header.bottom
+            topMargin: settings.verticalMargin
+            bottom: parent.bottom
+        }
+        clip: true
+        boundsBehavior: ListView.StopAtBounds
+        width: parent.width
+        model: deviceList
+        delegate: SwipeDelegate {
+            id: delegateControl
+            property bool blink: false
+            width: parent.width
+            height: settings.buttonHeight
+            Row {
+                id: delegateRow
+                spacing: settings.horizontalMargin
+                anchors {
+                    verticalCenter: parent.verticalCenter
+                    horizontalCenter: parent.horizontalCenter
+                }
+                Label {
+                    width: 50
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
+                    text: friendlyName
+                    font.pointSize: settings.textPointSize
+                    clip: true
+                    elide: Text.ElideRight
+                    color: delegateControl.blink ? settings.buttonPressedColor : settings.buttonReleasedColor
+                }
+                Label {
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
+                    text:  macAddress
+                    font {
+                        italic: true
+                        pointSize: settings.textPointSize
+                    }
+                    clip: true
+                    elide: Text.ElideRight
+                    color: delegateControl.blink ? settings.buttonPressedColor : settings.buttonReleasedColor
+                }
+            }
+            Rectangle {
+                id: contentFrame
+                property alias pressed: delegateControl.pressed
+                color: "transparent"
+                anchors {
+                    left: delegateRow.left
+                    leftMargin: -settings.horizontalMargin
+                    right: delegateRow.right
+                    rightMargin: -settings.horizontalMargin
+                    verticalCenter: delegateRow.verticalCenter
+                }
+                height: delegateRow.height + settings.verticalMargin
+                z: -1
+                radius: 5
+                border {
+                    width: 1
+                    color: contentFrame.pressed ? "lightgray" : "transparent"
+                }
             }
             Timer {
                 id: wolTimer
@@ -53,75 +125,68 @@ ApplicationWindow {
                     if (wolTimer.count > 8) {
                         wolTimer.count = 0
                         wolTimer.running = false
+                        delegateControl.blink = false
                     } else {
-                        wolOverlay.visible = !wolOverlay.visible
+                        delegateControl.blink = !delegateControl.blink
                     }
                 }
             }
-        }
-    }
-    ListView {
-        anchors {
-            top: header.bottom
-            topMargin: 20
-            bottom: parent.bottom
-        }
-        clip: true
-        boundsBehavior: ListView.StopAtBounds
-        width: parent.width
-        model: deviceList
-        delegate: Item {
-            width: parent.width
-            height: 50
-            Row {
-                id: delegateRow
-                spacing: 10
-                anchors {
-                    verticalCenter: parent.verticalCenter
-                    horizontalCenter: parent.horizontalCenter
+            onClicked: {
+                wolTimer.running = true
+                deviceList.wol(macAddress)
+            }
+            //swipe gestures handling
+            swipe.enabled: true
+            ListView.onRemove: SequentialAnimation {
+                PropertyAction {
+                    target: delegateControl
+                    property: "ListView.delayRemove"
+                    value: true
                 }
-                Label {
-                    width: 50
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignVCenter
-                    text: friendlyName
-                    font.pointSize: 14
+                NumberAnimation {
+                    target: delegateControl
+                    property: "height"
+                    to: 0
+                    easing.type: Easing.InOutQuad
                 }
-                Label {
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignVCenter
-                    text:  macAddress
-                    font {
-                        italic: true
-                        pointSize: 14
+                PropertyAction {
+                    target: delegateControl
+                    property: "ListView.delayRemove"
+                    value: false
+                }
+            }
+            swipe.right: Rectangle {
+                height: parent.height
+                width: deleteLabel.width
+                anchors.right: parent.right
+                color: deleteLabel.SwipeDelegate.pressed ? Qt.darker("tomato", 1.1) : "tomato"
+                SwipeDelegate.onClicked: listView.model.remove(index)
+                Column {
+                    anchors.fill: parent
+                    spacing: 0
+                    Item {
+                        height: 5
+                        width: parent.width
                     }
-                }
-            }
-            Rectangle {
-                id: contentFrame
-                property alias pressed: delegateMouseArea.pressed
-                color: "transparent"
-                anchors {
-                    left: delegateRow.left
-                    leftMargin: -10
-                    right: delegateRow.right
-                    rightMargin: -10
-                    verticalCenter: delegateRow.verticalCenter
-                }
-                height: delegateRow.height + 20
-                z: -1
-                radius: 5
-                border {
-                    width: 1
-                    color: contentFrame.pressed ? "lightgray" : "transparent"
-                }
-            }
-            MouseArea {
-                id: delegateMouseArea
-                anchors.fill: parent
-                onClicked: {
-                    wolTimer.running = true
-                    deviceList.wol(macAddress)
+                    Image {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        height: parent.height/2 - 6
+                        width: height
+                        source: "qrc:/img/trash-o.svg"
+                        fillMode: Image.PreserveAspectFit
+                        mipmap: true
+                    }
+                    Label {
+                        id: deleteLabel
+                        text: qsTr("Delete")
+                        font.pointSize: settings.textPointSize
+                        clip: true
+                        elide: Text.ElideRight
+                        verticalAlignment: Label.AlignVCenter
+                        topPadding: 3
+                        leftPadding: 12
+                        rightPadding: 12
+                    }
                 }
             }
         }

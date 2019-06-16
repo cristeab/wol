@@ -3,5 +3,7 @@
         <file>qtquickcontrols2.conf</file>
         <file>qml/main.qml</file>
         <file>img/cloud-on-off.svg</file>
+        <file>img/trash-o.svg</file>
+        <file>qml/Settings.qml</file>
     </qresource>
 </RCC>
