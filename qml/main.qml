@@ -48,6 +48,21 @@ ApplicationWindow {
             }
         }
     }
+    Label {
+        visible: 0 === listView.count
+        anchors {
+            top: header.bottom
+            topMargin: settings.verticalMargin
+            left: parent.left
+            leftMargin: settings.horizontalMargin
+            right: parent.right
+            rightMargin: settings.horizontalMargin
+        }
+        horizontalAlignment: Text.AlignHCenter
+        wrapMode: Text.WordWrap
+        font.pointSize: settings.textPointSize
+        text: qsTr("Your MAC address list is empty.\nUse the add button above to add entries in this list.\nPress an item in the list to send a WOL packet.\nIn order to delete a list item swipe left, then press delete.")
+    }
     ListView {
         id: listView
         anchors {
@@ -159,9 +174,9 @@ ApplicationWindow {
                 height: parent.height
                 width: deleteLabel.width
                 anchors.right: parent.right
-                color: deleteLabel.SwipeDelegate.pressed ? Qt.darker("tomato", 1.1) : "tomato"
-                SwipeDelegate.onClicked: listView.model.remove(index)
+                color: SwipeDelegate.pressed ? Qt.darker("tomato", 1.1) : "tomato"
                 Column {
+                    SwipeDelegate.onClicked: listView.model.remove(index)
                     anchors.fill: parent
                     spacing: 0
                     Item {
