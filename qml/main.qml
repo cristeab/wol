@@ -227,7 +227,7 @@ ApplicationWindow {
                 height: parent.height
                 width: deleteLabel.width
                 anchors.right: parent.right
-                color: SwipeDelegate.pressed ? Qt.darker(Style.swipeItemColor, 1.1) : Style.swipeItemColor
+                color: SwipeDelegate.pressed ? Qt.darker(Style.swipeRemoveItemColor, 1.1) : Style.swipeRemoveItemColor
                 Column {
                     SwipeDelegate.onClicked: {
                         msgDlgProps.showInfo(qsTr("Remove item"), qsTr("Are you sure you want to remove ") + friendlyName + qsTr(" from the list."))
@@ -265,8 +265,8 @@ ApplicationWindow {
             swipe.left: Rectangle {
                 height: parent.height
                 width: editLabel.width
-                anchors.right: parent.right
-                color: SwipeDelegate.pressed ? Qt.darker(Style.swipeItemColor, 1.1) : Style.swipeItemColor
+                anchors.left: parent.left
+                color: SwipeDelegate.pressed ? Qt.darker(Style.swipeEditItemColor, 1.1) : Style.swipeEditItemColor
                 Column {
                     SwipeDelegate.onClicked: {
                         msgDlgProps.showEntry(qsTr("Edit"), deviceList.edit)

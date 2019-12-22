@@ -11,7 +11,8 @@ QtObject {
 
     readonly property color buttonPressedColor: "#a9ffff"
     readonly property color buttonReleasedColor: "white"
-    readonly property color swipeItemColor: "tomato"
+    readonly property color swipeRemoveItemColor: "tomato"
+    readonly property color swipeEditItemColor: "blue"
 
     readonly property int dialogWidth: 400
     readonly property int dialogHeight: 200
