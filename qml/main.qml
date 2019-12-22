@@ -24,11 +24,42 @@ ApplicationWindow {
             msgDlgProps.text = msg
             msgDlgLoader.item.visible = true
         }
+        function showEntry(title, cbk) {
+            msgDlgProps.acceptCallback = cbk
+            entryDlgLoader.active = true
+            entryDlgLoader.item.visible = true
+        }
     }
     Loader {
         id: msgDlgLoader
         active: "" !== msgDlgProps.text
         source: "qrc:/qml/MessageDialog.qml"
+    }
+
+    Loader {
+        id: entryDlgLoader
+        active: false
+        source: "qrc:/qml/EntryDialog.qml"
+    }
+    Button {
+        id: addButton
+        anchors {
+            top: parent.top
+            topMargin: 5
+            left: parent.left
+            leftMargin: Style.horizontalMargin
+        }
+        text: qsTr("Add")
+        font.pointSize: Style.textPointSize
+        contentItem: Label {
+            text: addButton.text
+            font: addButton.font
+            verticalAlignment: Text.AlignVCenter
+            horizontalAlignment: Text.AlignHCenter
+            color: Style.buttonPressedColor
+            clip: true
+        }
+        onClicked: msgDlgProps.showEntry(qsTr("Add new entry"), deviceList.append)
     }
 
     Column {

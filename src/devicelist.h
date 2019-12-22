@@ -11,6 +11,7 @@ class DeviceList : public QAbstractListModel
 public:
     Q_INVOKABLE void wol(const QString &mac);
     Q_INVOKABLE void remove(int index);
+    Q_INVOKABLE void append(const QString &name, const QString &mac);
     enum CallModelRoles {
         FriendlyName = Qt::UserRole + 1,
         MacAddress

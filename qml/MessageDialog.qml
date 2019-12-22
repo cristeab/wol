@@ -3,8 +3,8 @@ import QtQuick.Controls 2.14
 
 Dialog {
     id: control
-    implicitWidth: 400
-    implicitHeight: 200
+    implicitWidth: Style.dialogWidth
+    implicitHeight: Style.dialogHeight
     x: (appWin.width-width)/2
     y: (appWin.height-height)/2
     z: 2
@@ -24,7 +24,6 @@ Dialog {
             msgDlgProps.cancelCallback = null
         }
     }
-    visible: "" !== controlLabel.text
     title: msgDlgProps.title
     modal: true
     standardButtons: Dialog.Ok | Dialog.Cancel

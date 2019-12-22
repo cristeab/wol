@@ -65,3 +65,13 @@ void DeviceList::remove(int index)
         emit layoutChanged();
     }
 }
+
+void DeviceList::append(const QString &name, const QString &mac)
+{
+    emit layoutAboutToBeChanged();
+    DeviceInfo devInfo;
+    devInfo.friendlyName = name;
+    devInfo.macAddress = mac;
+    _deviceInfo.append(devInfo);
+    emit layoutChanged();
+}
