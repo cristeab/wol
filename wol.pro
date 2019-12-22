@@ -49,4 +49,6 @@ ios {
     QMAKE_INFO_PLIST = ios/Info.plist
     ios_icon.files = $$files($$PWD/ios/iconset/Icon*.png) $$PWD/ios/iconset/iTunesArtwork.png $$PWD/ios/iconset/iTunesArtwork@2x.png
     QMAKE_BUNDLE_DATA += ios_icon
+
+    OTHER_FILES += ios/Info.plist
 }
