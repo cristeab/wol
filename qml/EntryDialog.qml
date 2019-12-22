@@ -12,8 +12,19 @@ Dialog {
     onAccepted: {
         msgDlgProps.title = ""
         if (null !== msgDlgProps.acceptCallback) {
-            msgDlgProps.acceptCallback(nameEdit.text, macEdit.text)
+            if (-1 === msgDlgProps.callbackArg) {
+                msgDlgProps.acceptCallback(nameEdit.text, macEdit.text)
+            } else {
+                msgDlgProps.acceptCallback(msgDlgProps.callbackArg, nameEdit.text, macEdit.text)
+                msgDlgProps.callbackArg = -1
+            }
             msgDlgProps.acceptCallback = null
+        }
+    }
+    onRejected: {
+        if (null !== msgDlgProps.cancelCallback) {
+            msgDlgProps.cancelCallback()
+            msgDlgProps.cancelCallback = null
         }
     }
     title: msgDlgProps.title

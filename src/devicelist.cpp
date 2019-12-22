@@ -75,3 +75,14 @@ void DeviceList::append(const QString &name, const QString &mac)
     _deviceInfo.append(devInfo);
     emit layoutChanged();
 }
+
+void DeviceList::edit(int index, const QString &name, const QString &mac)
+{
+    if (isValidIndex(index)) {
+        emit layoutAboutToBeChanged();
+        _deviceInfo[index] = { name, mac };
+        emit layoutChanged();
+    } else {
+        qWarning() << "Invalid index" << index;
+    }
+}

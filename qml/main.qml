@@ -230,12 +230,10 @@ ApplicationWindow {
                 color: SwipeDelegate.pressed ? Qt.darker(Style.swipeItemColor, 1.1) : Style.swipeItemColor
                 Column {
                     SwipeDelegate.onClicked: {
+                        msgDlgProps.showInfo(qsTr("Remove item"), qsTr("Are you sure you want to remove ") + friendlyName + qsTr(" from the list."))
                         msgDlgProps.acceptCallback = listView.model.remove
                         msgDlgProps.callbackArg = index
                         msgDlgProps.cancelCallback = delegateControl.swipe.close
-                        msgDlgProps.title = qsTr("Remove item")
-                        msgDlgProps.text = qsTr("Are you sure you want to remove ") + friendlyName + qsTr(" from the list.")
-                        msgDlgLoader.item.visible = true
                     }
                     anchors.fill: parent
                     spacing: 0
@@ -254,6 +252,44 @@ ApplicationWindow {
                     Label {
                         id: deleteLabel
                         text: qsTr("Delete")
+                        font.pointSize: Style.textPointSize
+                        clip: true
+                        elide: Text.ElideRight
+                        verticalAlignment: Label.AlignVCenter
+                        topPadding: 3
+                        leftPadding: 12
+                        rightPadding: 12
+                    }
+                }
+            }
+            swipe.left: Rectangle {
+                height: parent.height
+                width: editLabel.width
+                anchors.right: parent.right
+                color: SwipeDelegate.pressed ? Qt.darker(Style.swipeItemColor, 1.1) : Style.swipeItemColor
+                Column {
+                    SwipeDelegate.onClicked: {
+                        msgDlgProps.showEntry(qsTr("Edit"), deviceList.edit)
+                        msgDlgProps.callbackArg = index
+                        msgDlgProps.cancelCallback = delegateControl.swipe.close
+                    }
+                    anchors.fill: parent
+                    spacing: 0
+                    Item {
+                        height: 5
+                        width: parent.width
+                    }
+                    Image {
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        height: parent.height/2 - 6
+                        width: height
+                        source: "qrc:/img/trash-o.svg"
+                        fillMode: Image.PreserveAspectFit
+                        mipmap: true
+                    }
+                    Label {
+                        id: editLabel
+                        text: qsTr("Edit")
                         font.pointSize: Style.textPointSize
                         clip: true
                         elide: Text.ElideRight
