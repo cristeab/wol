@@ -41,3 +41,12 @@ macx {
 
     #QMAKE_INFO_PLIST = FocusMe.plist
 }
+
+ios {
+    QMAKE_TARGET_BUNDLE_PREFIX = com
+    QMAKE_BUNDLE = cristeab.wol
+    QMAKE_DEVELOPMENT_TEAM = FAARUB626Q
+    QMAKE_INFO_PLIST = ios/Info.plist
+    ios_icon.files = $$files($$PWD/ios/iconset/Icon*.png) $$PWD/ios/iconset/iTunesArtwork.png $$PWD/ios/iconset/iTunesArtwork@2x.png
+    QMAKE_BUNDLE_DATA += ios_icon
+}
