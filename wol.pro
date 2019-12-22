@@ -26,6 +26,7 @@ OTHER_FILES += CMakeLists.txt \
                Copyright.txt \
                README.md \
                build-macos-release.sh \
+               build-ios-release.sh \
                tools/gen_icns.sh
 
 QMAKE_TARGET_COMPANY = Bogdan C.
