@@ -4,7 +4,8 @@
         <file>qml/main.qml</file>
         <file>img/cloud-on-off.svg</file>
         <file>img/trash-o.svg</file>
-        <file>qml/Settings.qml</file>
         <file>qml/MessageDialog.qml</file>
+        <file>qml/Style.qml</file>
+        <file>qml/qmldir</file>
     </qresource>
 </RCC>

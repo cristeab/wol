@@ -1,5 +1,5 @@
-import QtQuick 2.12
-import QtQuick.Controls 2.5
+import QtQuick 2.14
+import QtQuick.Controls 2.14
 import QtGraphicalEffects 1.12
 
 ApplicationWindow {
@@ -7,10 +7,6 @@ ApplicationWindow {
     visible: true
     width: 640
     height: 480
-
-    Settings {
-        id: settings
-    }
 
     QtObject {
         id: msgDlgProps
@@ -37,10 +33,10 @@ ApplicationWindow {
 
     Column {
         id: header
-        spacing: settings.verticalMargin
+        spacing: Style.verticalMargin
         anchors {
             top: parent.top
-            topMargin: settings.verticalMargin
+            topMargin: Style.verticalMargin
             horizontalCenter: parent.horizontalCenter
         }
         Label {
@@ -49,12 +45,12 @@ ApplicationWindow {
             text: qsTr("Wake on LAN")
             font {
                 bold: true
-                pointSize: settings.headerPointSize
+                pointSize: Style.headerPointSize
             }
         }
         Item {
             anchors.horizontalCenter: wolLabel.horizontalCenter
-            height: settings.buttonHeight
+            height: Style.buttonHeight
             width: height
             Image {
                 id: wolImg
@@ -68,7 +64,7 @@ ApplicationWindow {
                 visible: true
                 anchors.fill: wolImg
                 source: wolImg
-                color: settings.buttonPressedColor
+                color: Style.buttonPressedColor
             }
         }
     }
@@ -76,22 +72,22 @@ ApplicationWindow {
         visible: 0 === listView.count
         anchors {
             top: header.bottom
-            topMargin: settings.verticalMargin
+            topMargin: Style.verticalMargin
             left: parent.left
-            leftMargin: settings.horizontalMargin
+            leftMargin: Style.horizontalMargin
             right: parent.right
-            rightMargin: settings.horizontalMargin
+            rightMargin: Style.horizontalMargin
         }
         horizontalAlignment: Text.AlignHCenter
         wrapMode: Text.WordWrap
-        font.pointSize: settings.textPointSize
+        font.pointSize: Style.textPointSize
         text: qsTr("Your MAC address list is empty.\nUse the add button above to add entries in this list.\nPress an item in the list to send a WOL packet.\nIn order to delete a list item swipe left, then press delete.")
     }
     ListView {
         id: listView
         anchors {
             top: header.bottom
-            topMargin: settings.verticalMargin
+            topMargin: Style.verticalMargin
             bottom: parent.bottom
         }
         clip: true
@@ -102,10 +98,10 @@ ApplicationWindow {
             id: delegateControl
             property bool blink: false
             width: parent.width
-            height: settings.buttonHeight
+            height: Style.buttonHeight
             Row {
                 id: delegateRow
-                spacing: settings.horizontalMargin
+                spacing: Style.horizontalMargin
                 anchors {
                     verticalCenter: parent.verticalCenter
                     horizontalCenter: parent.horizontalCenter
@@ -115,10 +111,10 @@ ApplicationWindow {
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
                     text: friendlyName
-                    font.pointSize: settings.textPointSize
+                    font.pointSize: Style.textPointSize
                     clip: true
                     elide: Text.ElideRight
-                    color: delegateControl.blink ? settings.buttonPressedColor : settings.buttonReleasedColor
+                    color: delegateControl.blink ? Style.buttonPressedColor : Style.buttonReleasedColor
                 }
                 Label {
                     horizontalAlignment: Text.AlignLeft
@@ -126,11 +122,11 @@ ApplicationWindow {
                     text:  macAddress
                     font {
                         italic: true
-                        pointSize: settings.textPointSize
+                        pointSize: Style.textPointSize
                     }
                     clip: true
                     elide: Text.ElideRight
-                    color: delegateControl.blink ? settings.buttonPressedColor : settings.buttonReleasedColor
+                    color: delegateControl.blink ? Style.buttonPressedColor : Style.buttonReleasedColor
                 }
             }
             Rectangle {
@@ -139,12 +135,12 @@ ApplicationWindow {
                 color: "transparent"
                 anchors {
                     left: delegateRow.left
-                    leftMargin: -settings.horizontalMargin
+                    leftMargin: -Style.horizontalMargin
                     right: delegateRow.right
-                    rightMargin: -settings.horizontalMargin
+                    rightMargin: -Style.horizontalMargin
                     verticalCenter: delegateRow.verticalCenter
                 }
-                height: delegateRow.height + settings.verticalMargin
+                height: delegateRow.height + Style.verticalMargin
                 z: -1
                 radius: 5
                 border {
@@ -225,7 +221,7 @@ ApplicationWindow {
                     Label {
                         id: deleteLabel
                         text: qsTr("Delete")
-                        font.pointSize: settings.textPointSize
+                        font.pointSize: Style.textPointSize
                         clip: true
                         elide: Text.ElideRight
                         verticalAlignment: Label.AlignVCenter

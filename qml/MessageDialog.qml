@@ -1,5 +1,5 @@
-import QtQuick 2.12
-import QtQuick.Controls 2.5
+import QtQuick 2.14
+import QtQuick.Controls 2.14
 
 Dialog {
     id: control
@@ -37,6 +37,6 @@ Dialog {
         wrapMode: Text.WordWrap
         elide: Text.ElideRight
         clip: true
-        font.pointSize: settings.textPointSize
+        font.pointSize: Style.textPointSize
     }
 }
