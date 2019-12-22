@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(wol LANGUAGES CXX)
+project(wol LANGUAGES NONE)
 
 #installer setup
 if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
