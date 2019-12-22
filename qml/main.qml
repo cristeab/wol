@@ -116,6 +116,7 @@ ApplicationWindow {
     }
     ListView {
         id: listView
+        readonly property int itemWidth: (listView.width - 2 * Style.horizontalMargin) / 2
         anchors {
             top: header.bottom
             topMargin: Style.verticalMargin
@@ -132,14 +133,14 @@ ApplicationWindow {
             height: Style.buttonHeight
             Row {
                 id: delegateRow
-                spacing: Style.horizontalMargin
+                spacing: 2 * Style.horizontalMargin
                 anchors {
                     verticalCenter: parent.verticalCenter
                     horizontalCenter: parent.horizontalCenter
                 }
                 Label {
-                    width: 50
-                    horizontalAlignment: Text.AlignLeft
+                    width: listView.itemWidth
+                    horizontalAlignment: Text.AlignRight
                     verticalAlignment: Text.AlignVCenter
                     text: friendlyName
                     font.pointSize: Style.textPointSize
@@ -148,6 +149,7 @@ ApplicationWindow {
                     color: delegateControl.blink ? Style.buttonPressedColor : Style.buttonReleasedColor
                 }
                 Label {
+                    width: listView.itemWidth
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
                     text:  macAddress
