@@ -5,7 +5,6 @@ MINOR_VERSION=$(git rev-list --count HEAD)
 
 QT_VER=5.14.0
 QT_ROOT=$HOME/Qt/$QT_VER/clang_64
-echo "QT version $QT_VER"
 
 rm -rf build
 mkdir build
