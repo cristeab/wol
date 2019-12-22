@@ -37,7 +37,6 @@ Dialog {
         rows: 2
         anchors {
             top: parent.top
-            topMargin: 2 * Style.horizontalMargin
             left: parent.left
             right: parent.right
             rightMargin: 60
@@ -60,6 +59,7 @@ Dialog {
             width: dlgGrid.itemWidth
             font.pointSize: Style.textPointSize
             placeholderText: qsTr("Friendly name")
+            text: deviceList.friendlyName(msgDlgProps.callbackArg)
         }
         Label {
             text: qsTr("MAC Address")
@@ -77,6 +77,7 @@ Dialog {
             width: dlgGrid.itemWidth
             font.pointSize: Style.textPointSize
             placeholderText: qsTr("hh:hh:hh:hh:hh:hh")
+            text: deviceList.macAddress(msgDlgProps.callbackArg)
         }
     }
 }

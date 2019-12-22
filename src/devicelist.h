@@ -13,6 +13,8 @@ public:
     Q_INVOKABLE void remove(int index);
     Q_INVOKABLE void append(const QString &name, const QString &mac);
     Q_INVOKABLE void edit(int index, const QString &name, const QString &mac);
+    Q_INVOKABLE QString friendlyName(int index) const;
+    Q_INVOKABLE QString macAddress(int index) const;
     enum CallModelRoles {
         FriendlyName = Qt::UserRole + 1,
         MacAddress

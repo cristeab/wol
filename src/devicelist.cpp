@@ -86,3 +86,19 @@ void DeviceList::edit(int index, const QString &name, const QString &mac)
         qWarning() << "Invalid index" << index;
     }
 }
+
+QString DeviceList::friendlyName(int index) const
+{
+    if (isValidIndex(index)) {
+        return _deviceInfo.at(index).friendlyName;
+    }
+    return "";
+}
+
+QString DeviceList::macAddress(int index) const
+{
+    if (isValidIndex(index)) {
+        return _deviceInfo.at(index).macAddress;
+    }
+    return "";
+}

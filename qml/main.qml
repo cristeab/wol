@@ -17,15 +17,18 @@ ApplicationWindow {
         property var cancelCallback: null
         property int callbackArg: -1
         function showInfo(title, msg) {
+            msgDlgProps.title = title
+            msgDlgProps.text = msg
             msgDlgProps.acceptCallback = null
             msgDlgProps.cancelCallback = null
             msgDlgProps.callbackArg = -1
-            msgDlgProps.title = title
-            msgDlgProps.text = msg
             msgDlgLoader.item.visible = true
         }
         function showEntry(title, cbk) {
+            msgDlgProps.title = title
             msgDlgProps.acceptCallback = cbk
+            msgDlgProps.cancelCallback = null
+            msgDlgProps.callbackArg = -1
             entryDlgLoader.active = true
             entryDlgLoader.item.visible = true
         }
