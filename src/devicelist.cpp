@@ -1,9 +1,14 @@
 #include "devicelist.h"
+#include <thread>
+#include <QApplication>
+#include <QSettings>
 #include <QDebug>
 
 DeviceList::DeviceList(QObject *parent) : QAbstractListModel(parent)
 {
     setObjectName("deviceList");
+    load();
+
     DeviceInfo devInfo;
     devInfo.friendlyName = "Media";
     devInfo.macAddress = "c0:3f:d5:67:56:ad";
@@ -85,6 +90,8 @@ void DeviceList::edit(int index, const QString &name, const QString &mac)
     } else {
         qWarning() << "Invalid index" << index;
     }
+    std::thread th(&DeviceList::save, this);
+    th.detach();
 }
 
 QString DeviceList::friendlyName(int index) const
@@ -101,4 +108,33 @@ QString DeviceList::macAddress(int index) const
         return _deviceInfo.at(index).macAddress;
     }
     return "";
+}
+
+void DeviceList::save()
+{
+    QSettings settings(qApp->organizationName(), qApp->applicationName());
+    settings.beginWriteArray("deviceInfo");
+    for (int i = 0; i < _deviceInfo.size(); ++i) {
+        settings.setArrayIndex(i);
+        settings.setValue("friendlyName", _deviceInfo.at(i).friendlyName);
+        settings.setValue("macAddress", _deviceInfo.at(i).macAddress);
+    }
+    settings.endArray();
+}
+
+void DeviceList::load()
+{
+    QSettings settings(qApp->organizationName(), qApp->applicationName());
+    int size = settings.beginReadArray("deviceInfo");
+    _deviceInfo.clear();
+    emit layoutAboutToBeChanged();
+    for (int i = 0; i < size; ++i) {
+        settings.setArrayIndex(i);
+        DeviceInfo di;
+        di.friendlyName = settings.value("friendlyName").toString();
+        di.macAddress = settings.value("macAddress").toString();
+        _deviceInfo.append(di);
+    }
+    emit layoutChanged();
+    settings.endArray();
 }

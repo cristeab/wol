@@ -115,7 +115,7 @@ ApplicationWindow {
         horizontalAlignment: Text.AlignHCenter
         wrapMode: Text.WordWrap
         font.pointSize: Style.textPointSize
-        text: qsTr("Your MAC address list is empty.\nUse the add button above to add entries in this list.\nPress an item in the list to send a WOL packet.\nIn order to delete a list item swipe left, then press delete.")
+        text: qsTr("Your MAC address list is empty.\nUse the add button above to add entries in this list.\nPress an item in the list to send a WOL packet.\nIn order to edit a list item swipe right, then press edit.\nIn order to delete a list item swipe left, then press delete.")
     }
     ListView {
         id: listView

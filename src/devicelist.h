@@ -31,6 +31,8 @@ private:
     bool isValidIndex(int idx) const {
         return ((0 <= idx) && (idx < _deviceInfo.size()));
     }
+    void save();
+    void load();
     QVector<DeviceInfo> _deviceInfo;
     Wol _wol;
 };
