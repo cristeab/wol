@@ -227,7 +227,7 @@ ApplicationWindow {
                 height: parent.height
                 width: deleteLabel.width
                 anchors.right: parent.right
-                color: SwipeDelegate.pressed ? Qt.darker("tomato", 1.1) : "tomato"
+                color: SwipeDelegate.pressed ? Qt.darker(Style.swipeItemColor, 1.1) : Style.swipeItemColor
                 Column {
                     SwipeDelegate.onClicked: {
                         msgDlgProps.acceptCallback = listView.model.remove
