@@ -3,6 +3,8 @@ pragma Singleton
 import QtQuick 2.14
 
 QtObject {
+    readonly property bool isIOs: "ios" === Qt.platform.os
+
     readonly property int verticalMargin: 20
     readonly property int horizontalMargin: 10
     readonly property int buttonHeight: 50

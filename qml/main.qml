@@ -5,8 +5,12 @@ import QtGraphicalEffects 1.12
 ApplicationWindow {
     id: appWin
     visible: true
-    width: 640
-    height: 480
+    width: Style.isIOs ? undefined : 640
+    height: Style.isIOs ? undefined : 480
+
+    flags: Style.isIOs ? Qt.MaximizeUsingFullscreenGeometryHint : undefined
+
+    title: Qt.application.name
 
     QtObject {
         id: msgDlgProps
