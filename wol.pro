@@ -1,6 +1,6 @@
 TARGET = wol
 TEMPLATE = app
-VERSION = 1.0.0.0
+VERSION = 1.0.0
 
 CONFIG(release, debug|release) {
     DEFINES += QT_NO_DEBUG_OUTPUT
@@ -25,6 +25,7 @@ RESOURCES += qml.qrc
 OTHER_FILES += CMakeLists.txt \
                Copyright.txt \
                README.md \
+               build-macos-release.sh \
                tools/gen_icns.sh
 
 QMAKE_TARGET_COMPANY = Bogdan C.
