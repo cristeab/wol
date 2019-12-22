@@ -62,7 +62,7 @@ ApplicationWindow {
             color: Style.buttonPressedColor
             clip: true
         }
-        onClicked: msgDlgProps.showEntry(qsTr("Add new entry"), deviceList.append)
+        onClicked: msgDlgProps.showEntry(qsTr("Add New Entry"), deviceList.append)
     }
 
     Column {
@@ -233,7 +233,7 @@ ApplicationWindow {
                 color: SwipeDelegate.pressed ? Qt.darker(Style.swipeRemoveItemColor, 1.1) : Style.swipeRemoveItemColor
                 Column {
                     SwipeDelegate.onClicked: {
-                        msgDlgProps.showInfo(qsTr("Remove item"), qsTr("Are you sure you want to remove ") + friendlyName + qsTr(" from the list."))
+                        msgDlgProps.showInfo(qsTr("Delete Entry"), qsTr("Are you sure you want to delete ") + friendlyName + qsTr(" from the list."))
                         msgDlgProps.acceptCallback = listView.model.remove
                         msgDlgProps.callbackArg = index
                         msgDlgProps.cancelCallback = delegateControl.swipe.close
@@ -272,7 +272,7 @@ ApplicationWindow {
                 color: SwipeDelegate.pressed ? Qt.darker(Style.swipeEditItemColor, 1.1) : Style.swipeEditItemColor
                 Column {
                     SwipeDelegate.onClicked: {
-                        msgDlgProps.showEntry(qsTr("Edit"), deviceList.edit)
+                        msgDlgProps.showEntry(qsTr("Edit Entry"), deviceList.edit)
                         msgDlgProps.callbackArg = index
                         msgDlgProps.cancelCallback = delegateControl.swipe.close
                     }
