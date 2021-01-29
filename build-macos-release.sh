@@ -7,9 +7,10 @@ rm -rf build
 mkdir build
 cd build
 
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$HOME/Qt/$QT_VER/clang_64
+cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$QT_ROOT
 make -j
 
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$QT_ROOT
+mkdir -p wol.app/Contents/Frameworks
+cp -rf $QT_ROOT/lib/QtQuickControls2Impl.framework wol.app/Contents/Frameworks
 make pack
 
