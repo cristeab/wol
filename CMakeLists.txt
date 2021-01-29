@@ -1,6 +1,30 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.17)
 
-project(wol LANGUAGES NONE)
+project(wol LANGUAGES CXX)
+set(PROJECT_VERSION "1.0")
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+find_package (Qt6 COMPONENTS Core Qml Quick Svg REQUIRED)
+
+file (GLOB_RECURSE SRCS src/*.cpp)
+qt6_add_resources (RSCS res.qrc)
+
+add_executable ("${PROJECT_NAME}" MACOSX_BUNDLE ${SRCS} ${RSCS} "${CMAKE_SOURCE_DIR}/img/wol.icns")
+set_source_files_properties ("${CMAKE_SOURCE_DIR}/img/wol.icns"
+    PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
+set_target_properties(${PROJECT_NAME} PROPERTIES
+    MACOSX_BUNDLE_GUI_IDENTIFIER "com.cristeab.wol"
+    MACOSX_BUNDLE_INFO_STRING "Wake on LAN"
+    MACOSX_BUNDLE_ICON_FILE "wol.icns"
+    MACOSX_BUNDLE_BUNDLE_NAME "Wake on LAN"
+    MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION}
+    MACOSX_BUNDLE_LONG_VERSION_STRING ${PROJECT_VERSION}
+    MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
+    MACOSX_BUNDLE_COPYRIGHT "Copyright 2021 Bogdan Cristea. All rights reserved")
 
 #installer setup
 if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")

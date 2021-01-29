@@ -4,6 +4,7 @@ import QtQuick 2.14
 
 QtObject {
     readonly property bool isIOs: "ios" === Qt.platform.os
+    readonly property bool isMacOs: "osx" === Qt.platform.os
 
     readonly property int verticalMargin: 20
     readonly property int horizontalMargin: 10

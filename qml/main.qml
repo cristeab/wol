@@ -5,12 +5,16 @@ import QtGraphicalEffects 1.12
 ApplicationWindow {
     id: appWin
     visible: true
-    width: Style.isIOs ? undefined : 640
-    height: Style.isIOs ? undefined : 480
-
-    flags: Style.isIOs ? Qt.MaximizeUsingFullscreenGeometryHint : undefined
-
     title: Qt.application.name
+
+    Component.onCompleted: {
+        if (Style.isIOs) {
+            appWin.flags = Qt.MaximizeUsingFullscreenGeometryHint
+        } else if (Style.isMacOs) {
+            appWin.width = 640
+            appWin.height = 480
+        }
+    }
 
     QtObject {
         id: msgDlgProps
