@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package (Qt6 COMPONENTS Core Qml Quick Svg REQUIRED)
 
 file (GLOB_RECURSE SRCS src/*.cpp)
-qt6_add_resources (RSCS res.qrc)
+qt6_add_resources (RSCS qml.qrc)
 
 add_executable ("${PROJECT_NAME}" MACOSX_BUNDLE ${SRCS} ${RSCS} "${CMAKE_SOURCE_DIR}/img/wol.icns")
 set_source_files_properties ("${CMAKE_SOURCE_DIR}/img/wol.icns"
@@ -25,6 +25,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     MACOSX_BUNDLE_LONG_VERSION_STRING ${PROJECT_VERSION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_COPYRIGHT "Copyright 2021 Bogdan Cristea. All rights reserved")
+target_link_libraries (${PROJECT_NAME} Qt6::Core Qt6::Qml Qt6::Quick Qt6::Svg)
 
 #installer setup
 if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")

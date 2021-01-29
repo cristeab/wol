@@ -1,6 +1,5 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.14
-import QtGraphicalEffects 1.12
 
 ApplicationWindow {
     id: appWin
@@ -100,13 +99,6 @@ ApplicationWindow {
                 source: "qrc:/img/cloud-on-off.svg"
                 fillMode: Image.PreserveAspectFit
                 mipmap: true
-            }
-            ColorOverlay {
-                id: wolOverlay
-                visible: true
-                anchors.fill: wolImg
-                source: wolImg
-                color: Style.buttonPressedColor
             }
         }
     }
