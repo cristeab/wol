@@ -1,16 +1,12 @@
 #!/bin/bash
 
-QT_VER=6.0.0
-QT_ROOT=$HOME/Qt/$QT_VER/clang_64
+set -e
+
+QT_VER=6.10.1
+QT_ROOT=$HOME/Qt/$QT_VER/macos
 
 rm -rf build
-mkdir build
-cd build
 
-cmake .. -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$QT_ROOT
-make -j
-
-mkdir -p wol.app/Contents/Frameworks
-cp -rf $QT_ROOT/lib/QtQuickControls2Impl.framework wol.app/Contents/Frameworks
-make pack
-
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$QT_ROOT
+cmake --build build --target all
+cmake --build build --target pack

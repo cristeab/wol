@@ -5,8 +5,8 @@ Wake on LAN application
 
 - cmake
 
-- Qt 5.13
+- Qt 6.10
 
 # Compilation
 
-Use the provided script: build-release.sh
+Use the provided script: build-macos-release.sh

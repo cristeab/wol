@@ -1,14 +1,20 @@
-cmake_minimum_required(VERSION 3.17)
+cmake_minimum_required(VERSION 3.30)
 
 project(wol LANGUAGES CXX)
 set(PROJECT_VERSION "1.0")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package (Qt6 COMPONENTS Core Qml Quick Svg REQUIRED)
+find_package (Qt6 COMPONENTS
+    Core
+    Qml
+    Quick
+    Svg
+    Widgets
+    REQUIRED)
 
 file (GLOB_RECURSE SRCS src/*.cpp)
 qt6_add_resources (RSCS qml.qrc)
@@ -25,7 +31,12 @@ set_target_properties(${PROJECT_NAME} PROPERTIES
     MACOSX_BUNDLE_LONG_VERSION_STRING ${PROJECT_VERSION}
     MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION}
     MACOSX_BUNDLE_COPYRIGHT "Copyright 2021 Bogdan Cristea. All rights reserved")
-target_link_libraries (${PROJECT_NAME} Qt6::Core Qt6::Qml Qt6::Quick Qt6::Svg)
+target_link_libraries (${PROJECT_NAME}
+    Qt6::Core
+    Qt6::Qml
+    Qt6::Quick
+    Qt6::Svg
+    Qt6::Widgets)
 
 #installer setup
 if (CMAKE_BUILD_TYPE MATCHES "^[Rr]elease")
