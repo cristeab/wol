@@ -10,9 +10,8 @@ int main(int argc, char *argv[])
     app.setApplicationName("WOL");
 
     QQmlApplicationEngine engine;
-    QQmlContext *context = engine.rootContext();
-    if (nullptr != context) {
-        DeviceList *devList = new DeviceList();
+    if (auto *context = engine.rootContext()) {
+        auto *devList = new DeviceList();
         context->setContextProperty(devList->objectName(), devList);
     }
     const QUrl url(QStringLiteral("qrc:/qml/main.qml"));

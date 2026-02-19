@@ -9,13 +9,8 @@ DeviceList::DeviceList(QObject *parent) : QAbstractListModel(parent)
     setObjectName("deviceList");
     load();
 
-    DeviceInfo devInfo;
-    devInfo.friendlyName = "Media";
-    devInfo.macAddress = "c0:3f:d5:67:56:ad";
-    _deviceInfo.append(devInfo);
-    devInfo.friendlyName = "Dell";
-    devInfo.macAddress = "b8:ca:3a:ad:4c:21";
-    _deviceInfo.append(devInfo);
+    _deviceInfo.append({.friendlyName = "Media", .macAddress = "c0:3f:d5:67:56:ad"});
+    _deviceInfo.append({.friendlyName = "Dell", .macAddress = "b8:ca:3a:ad:4c:21"});
 }
 
 int DeviceList::rowCount(const QModelIndex& /*parent*/) const
@@ -74,10 +69,7 @@ void DeviceList::remove(int index)
 void DeviceList::append(const QString &name, const QString &mac)
 {
     emit layoutAboutToBeChanged();
-    DeviceInfo devInfo;
-    devInfo.friendlyName = name;
-    devInfo.macAddress = mac;
-    _deviceInfo.append(devInfo);
+    _deviceInfo.append({.friendlyName = name, .macAddress = mac});
     emit layoutChanged();
 }
 
@@ -85,7 +77,7 @@ void DeviceList::edit(int index, const QString &name, const QString &mac)
 {
     if (isValidIndex(index)) {
         emit layoutAboutToBeChanged();
-        _deviceInfo[index] = { name, mac };
+        _deviceInfo[index] = { .friendlyName = name, .macAddress = mac };
         emit layoutChanged();
     } else {
         qWarning() << "Invalid index" << index;
@@ -114,10 +106,11 @@ void DeviceList::save()
 {
     QSettings settings(qApp->organizationName(), qApp->applicationName());
     settings.beginWriteArray("deviceInfo");
-    for (int i = 0; i < _deviceInfo.size(); ++i) {
-        settings.setArrayIndex(i);
-        settings.setValue("friendlyName", _deviceInfo.at(i).friendlyName);
-        settings.setValue("macAddress", _deviceInfo.at(i).macAddress);
+    int i = 0;
+    for (auto const& [friendlyName, macAddress]: std::as_const(_deviceInfo)) {
+        settings.setArrayIndex(i++);
+        settings.setValue("friendlyName", friendlyName);
+        settings.setValue("macAddress", macAddress);
     }
     settings.endArray();
 }
@@ -130,10 +123,8 @@ void DeviceList::load()
     emit layoutAboutToBeChanged();
     for (int i = 0; i < size; ++i) {
         settings.setArrayIndex(i);
-        DeviceInfo di;
-        di.friendlyName = settings.value("friendlyName").toString();
-        di.macAddress = settings.value("macAddress").toString();
-        _deviceInfo.append(di);
+        _deviceInfo.append({.friendlyName = settings.value("friendlyName").toString(),
+                            .macAddress = settings.value("macAddress").toString()});
     }
     emit layoutChanged();
     settings.endArray();

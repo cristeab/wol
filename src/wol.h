@@ -16,8 +16,10 @@ private:
         }
         SocketHandle(const SocketHandle&) = delete;
         SocketHandle& operator=(const SocketHandle&) = delete;
+        SocketHandle(SocketHandle&&) = delete;
+        SocketHandle& operator=(SocketHandle&&) = delete;
 
-        int get() const {
+        constexpr int get() const {
             return _descriptor;
         }
 
