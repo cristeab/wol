@@ -11,10 +11,16 @@ void Wol::send(const std::string& hardware_addr)
 
     // Build the message to send.
     //   (6 * 0XFF followed by 16 * destination address.)
-    std::string message(6, 0xFF);
-    for (size_t i = 0; i < 16; ++i) {
-        message += ether_addr;
-    }
+    const size_t addr_len = ether_addr.size();
+    const size_t total    = 6 + 16 * addr_len;
+
+    std::string message;
+    message.resize_and_overwrite(total, [&](char* buf, size_t n) {
+        std::memset(buf, 0xFF, 6);
+        for (size_t i = 0; i < 16; ++i)
+            std::memcpy(buf + 6 + i * addr_len, ether_addr.data(), addr_len);
+        return n;
+    });
 
     // Set socket options.
     const int optval{1};
@@ -23,10 +29,8 @@ void Wol::send(const std::string& hardware_addr)
     }
 
     // Set up address
-    sockaddr_in addr{};
-    addr.sin_family = AF_INET;
+    sockaddr_in addr{.sin_family = AF_INET, .sin_port = htons(_port)};
     addr.sin_addr.s_addr = _bcast;
-    addr.sin_port = htons(_port);
 
     // Send the packet out.
     if (sendto(packet.get(), message.c_str(), message.length(), 0,
