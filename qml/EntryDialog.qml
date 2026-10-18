@@ -9,6 +9,12 @@ Dialog {
     y: (appWin.height-height)/2
     z: 2
     closePolicy: Popup.NoAutoClose
+    function updateAcceptButton() {
+        const okButton = standardButton(Dialog.Ok)
+        if (okButton && macEdit)
+            okButton.enabled = nameEdit.text.trim().length > 0 && macEdit.acceptableInput
+    }
+    onOpened: updateAcceptButton()
     onAccepted: {
         msgDlgProps.title = ""
         if (null !== msgDlgProps.acceptCallback) {
@@ -26,6 +32,9 @@ Dialog {
             msgDlgProps.cancelCallback()
             msgDlgProps.cancelCallback = null
         }
+        msgDlgProps.title = ""
+        msgDlgProps.acceptCallback = null
+        msgDlgProps.callbackArg = -1
     }
     title: msgDlgProps.title
     modal: true
@@ -60,6 +69,8 @@ Dialog {
             font.pointSize: Style.textPointSize
             placeholderText: qsTr("Friendly name")
             text: deviceList.friendlyName(msgDlgProps.callbackArg)
+            maximumLength: 128
+            onTextChanged: control.updateAcceptButton()
         }
         Label {
             text: qsTr("MAC Address")
@@ -78,6 +89,11 @@ Dialog {
             font.pointSize: Style.textPointSize
             placeholderText: qsTr("hh:hh:hh:hh:hh:hh")
             text: deviceList.macAddress(msgDlgProps.callbackArg)
+            maximumLength: 17
+            validator: RegularExpressionValidator {
+                regularExpression: /^[0-9A-Fa-f]{2}([:-]?[0-9A-Fa-f]{2}){5}$/
+            }
+            onTextChanged: control.updateAcceptButton()
         }
     }
 }

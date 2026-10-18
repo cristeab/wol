@@ -10,10 +10,8 @@ int main(int argc, char *argv[])
     app.setApplicationName("WOL");
 
     QQmlApplicationEngine engine;
-    if (auto *context = engine.rootContext()) {
-        auto *devList = new DeviceList();
-        context->setContextProperty(devList->objectName(), devList);
-    }
+    auto *devList = new DeviceList(&engine);
+    engine.rootContext()->setContextProperty(devList->objectName(), devList);
     const QUrl url(QStringLiteral("qrc:/qml/main.qml"));
     QObject::connect(&engine, &QQmlApplicationEngine::objectCreated,
                      &app, [url](QObject *obj, const QUrl &objUrl) {

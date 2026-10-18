@@ -10,6 +10,7 @@ class DeviceList : public QAbstractListModel
     Q_OBJECT
 public:
     Q_INVOKABLE void wol(const QString &mac);
+    Q_INVOKABLE bool configureNetwork(const QString &broadcastAddress, int port);
     Q_INVOKABLE void remove(int index);
     Q_INVOKABLE void append(const QString &name, const QString &mac);
     Q_INVOKABLE void edit(int index, const QString &name, const QString &mac);

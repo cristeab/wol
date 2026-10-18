@@ -1,17 +1,24 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.14
+import QtQuick.Layouts 1.14
 
 ApplicationWindow {
     id: appWin
     visible: true
+    width: 960
+    height: 640
+    minimumWidth: 760
+    minimumHeight: 520
+    color: "#171a1b"
     title: Qt.application.name
+    property int pageIndex: 0
 
     Component.onCompleted: {
         if (Style.isIOs) {
             appWin.flags = Qt.MaximizeUsingFullscreenGeometryHint
         } else if (Style.isMacOs) {
-            appWin.width = 640
-            appWin.height = 480
+            appWin.width = 960
+            appWin.height = 640
         }
     }
 
@@ -50,7 +57,184 @@ ApplicationWindow {
         id: entryDlgLoader
         active: false
         source: "qrc:/qml/EntryDialog.qml"
+        z: 10
     }
+
+    Rectangle {
+        id: titleBar
+        anchors.top: parent.top
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: 54
+        color: "#202526"
+        z: 2
+
+        Label {
+            anchors.centerIn: parent
+            text: qsTr("WOL")
+            color: "#f5f2ec"
+            font.bold: true
+            font.pixelSize: 17
+        }
+
+        Row {
+            anchors {
+                right: parent.right
+                rightMargin: 24
+                verticalCenter: parent.verticalCenter
+            }
+            spacing: 8
+
+            Rectangle {
+                width: 9
+                height: width
+                radius: width / 2
+                color: "#35c7bc"
+                anchors.verticalCenter: parent.verticalCenter
+            }
+            Label {
+                text: qsTr("LOCAL NETWORK")
+                color: "#a8acab"
+                font.pixelSize: 11
+                font.letterSpacing: 1.1
+            }
+        }
+    }
+
+    Rectangle {
+        id: navigationRail
+        anchors {
+            top: titleBar.bottom
+            left: parent.left
+            bottom: parent.bottom
+        }
+        width: 190
+        color: "#202526"
+        z: 1
+
+        Column {
+            anchors {
+                left: parent.left
+                right: parent.right
+                top: parent.top
+                margins: 18
+            }
+            spacing: 8
+
+            Label {
+                text: qsTr("WAKE ON LAN")
+                color: "#707878"
+                font.pixelSize: 10
+                font.letterSpacing: 1.2
+                leftPadding: 12
+                bottomPadding: 8
+            }
+
+            Button {
+                id: devicesNav
+                width: parent.width
+                height: 44
+                text: qsTr("Devices")
+                onClicked: appWin.pageIndex = 0
+                contentItem: Label {
+                    text: devicesNav.text
+                    color: appWin.pageIndex === 0 ? "#f5f2ec" : "#a8acab"
+                    font.pixelSize: 14
+                    verticalAlignment: Text.AlignVCenter
+                    leftPadding: 18
+                }
+                background: Rectangle {
+                    radius: 6
+                    color: appWin.pageIndex === 0 ? "#343b3c" : "transparent"
+                    Rectangle {
+                        visible: appWin.pageIndex === 0
+                        width: 3
+                        radius: 2
+                        anchors {
+                            left: parent.left
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
+                        color: "#35c7bc"
+                    }
+                }
+            }
+
+            Button {
+                id: settingsNav
+                width: parent.width
+                height: 44
+                text: qsTr("Settings")
+                onClicked: appWin.pageIndex = 1
+                contentItem: Label {
+                    text: settingsNav.text
+                    color: appWin.pageIndex === 1 ? "#f5f2ec" : "#a8acab"
+                    font.pixelSize: 14
+                    verticalAlignment: Text.AlignVCenter
+                    leftPadding: 18
+                }
+                background: Rectangle {
+                    radius: 6
+                    color: appWin.pageIndex === 1 ? "#343b3c" : "transparent"
+                    Rectangle {
+                        visible: appWin.pageIndex === 1
+                        width: 3
+                        radius: 2
+                        anchors {
+                            left: parent.left
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
+                        color: "#35c7bc"
+                    }
+                }
+            }
+
+            Button {
+                id: aboutNav
+                width: parent.width
+                height: 44
+                text: qsTr("About")
+                onClicked: appWin.pageIndex = 2
+                contentItem: Label {
+                    text: aboutNav.text
+                    color: appWin.pageIndex === 2 ? "#f5f2ec" : "#a8acab"
+                    font.pixelSize: 14
+                    verticalAlignment: Text.AlignVCenter
+                    leftPadding: 18
+                }
+                background: Rectangle {
+                    radius: 6
+                    color: appWin.pageIndex === 2 ? "#343b3c" : "transparent"
+                    Rectangle {
+                        visible: appWin.pageIndex === 2
+                        width: 3
+                        radius: 2
+                        anchors {
+                            left: parent.left
+                            top: parent.top
+                            bottom: parent.bottom
+                        }
+                        color: "#35c7bc"
+                    }
+                }
+            }
+        }
+    }
+
+    StackLayout {
+        anchors {
+            top: titleBar.bottom
+            left: navigationRail.right
+            right: parent.right
+            bottom: parent.bottom
+        }
+        currentIndex: appWin.pageIndex
+
+        Item {
+            id: devicesPage
+            anchors.fill: parent
+
     Button {
         id: addButton
         anchors {
@@ -70,6 +254,10 @@ ApplicationWindow {
             clip: true
         }
         onClicked: msgDlgProps.showEntry(qsTr("Add New Entry"), deviceList.append)
+        background: Rectangle {
+            radius: 5
+            color: addButton.down ? "#269d96" : "#35c7bc"
+        }
     }
 
     Column {
@@ -304,5 +492,10 @@ ApplicationWindow {
                 }
             }
         }
+    }
+        }
+
+        Settings { }
+        About { }
     }
 }

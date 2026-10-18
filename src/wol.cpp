@@ -1,6 +1,25 @@
 #include "wol.h"
 #include <sys/socket.h>
 #include <arpa/inet.h>
+#include <cerrno>
+#include <cctype>
+#include <cstring>
+#include <stdexcept>
+#include <system_error>
+
+bool Wol::configure(const std::string& broadcastAddress, int port)
+{
+    if (port < 1 || port > 65535)
+        return false;
+
+    in_addr address{};
+    if (inet_pton(AF_INET, broadcastAddress.c_str(), &address) != 1)
+        return false;
+
+    _bcast = address.s_addr;
+    _port = static_cast<std::uint16_t>(port);
+    return true;
+}
 
 void Wol::send(const std::string& hardware_addr)
 {
@@ -24,50 +43,56 @@ void Wol::send(const std::string& hardware_addr)
 
     // Set socket options.
     const int optval{1};
-    if (setsockopt(packet.get(), SOL_SOCKET, SO_BROADCAST, &optval, sizeof(optval)) < 0) {
-        throw std::runtime_error("Failed to set socket options");
-    }
+    if (setsockopt(packet.get(), SOL_SOCKET, SO_BROADCAST, &optval, sizeof(optval)) < 0)
+        throw std::system_error(errno, std::generic_category(), "Failed to set socket options");
 
     // Set up address
-    sockaddr_in addr{.sin_family = AF_INET, .sin_port = htons(_port)};
-    addr.sin_addr.s_addr = _bcast;
+    sockaddr_in addr{.sin_family = AF_INET, .sin_port = htons(_port),
+                     .sin_addr = {.s_addr = _bcast}};
 
     // Send the packet out.
-    if (sendto(packet.get(), message.c_str(), message.length(), 0,
-        reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0) {
-        throw std::runtime_error("Failed to send packet");
-    }
+    if (sendto(packet.get(), message.data(), message.length(), 0,
+        reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0)
+        throw std::system_error(errno, std::generic_category(), "Failed to send packet");
 }
 
 std::string Wol::getEther(const std::string& hardwareAddr)
 {
-    std::string ether_addr;
-
-    for (size_t i = 0; i < hardwareAddr.length();) {
-        // Parse two characters at a time.
-        unsigned hex = getHexFromString(hardwareAddr.substr(i, 2));
-        i += 2;
-
-        ether_addr += static_cast<char>(hex & 0xFF);
-
-        // We might get a colon here, but it is not required.
-        if (hardwareAddr[i] == ':')
-            ++i;
-    }
-
-    if (ether_addr.length() != 6)
+    const auto isHex = [](char character) {
+        return std::isxdigit(static_cast<unsigned char>(character)) != 0;
+    };
+    const bool unseparated = hardwareAddr.size() == 12;
+    const bool separated = hardwareAddr.size() == 17 &&
+                           (hardwareAddr[2] == ':' || hardwareAddr[2] == '-') &&
+                           hardwareAddr[2] == hardwareAddr[5] &&
+                           hardwareAddr[2] == hardwareAddr[8] &&
+                           hardwareAddr[2] == hardwareAddr[11] &&
+                           hardwareAddr[2] == hardwareAddr[14];
+    if (!unseparated && !separated)
         throw std::runtime_error(hardwareAddr + " not a valid ether address");
+
+    std::string ether_addr;
+    ether_addr.reserve(6);
+    for (size_t group = 0; group < 6; ++group) {
+        const size_t offset = unseparated ? group * 2 : group * 3;
+        if (!isHex(hardwareAddr[offset]) || !isHex(hardwareAddr[offset + 1]))
+            throw std::runtime_error(hardwareAddr + " not a valid ether address");
+        ether_addr += static_cast<char>(getHexFromString(hardwareAddr.substr(offset, 2)));
+    }
 
     return ether_addr;
 }
 
 unsigned Wol::getHexFromString(const std::string& s)
 {
+    if (s.size() != 2)
+        throw std::runtime_error("Failed to parse hexadecimal " + s);
+
     unsigned hex{0};
 
     for (size_t i = 0; i < s.length(); ++i) {
         hex <<= 4;
-        if (isdigit(s[i])) {
+        if (std::isdigit(static_cast<unsigned char>(s[i]))) {
             hex |= static_cast<unsigned>(s[i] - '0');
         }
         else if (s[i] >= 'a' && s[i] <= 'f') {

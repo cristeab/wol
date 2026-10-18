@@ -1,20 +1,25 @@
 #include "devicelist.h"
-#include <thread>
 #include <QApplication>
 #include <QSettings>
 #include <QDebug>
+
+namespace {
+const QVector<DeviceList::DeviceInfo> initialDevices {
+    {.friendlyName = "Media", .macAddress = "c0:3f:d5:67:56:ad"},
+    {.friendlyName = "Dell", .macAddress = "b8:ca:3a:ad:4c:21"}
+};
+}
 
 DeviceList::DeviceList(QObject *parent) : QAbstractListModel(parent)
 {
     setObjectName("deviceList");
     load();
-
-    _deviceInfo.append({.friendlyName = "Media", .macAddress = "c0:3f:d5:67:56:ad"});
-    _deviceInfo.append({.friendlyName = "Dell", .macAddress = "b8:ca:3a:ad:4c:21"});
 }
 
-int DeviceList::rowCount(const QModelIndex& /*parent*/) const
+int DeviceList::rowCount(const QModelIndex& parent) const
 {
+    if (parent.isValid())
+        return 0;
     return _deviceInfo.size();
 }
 
@@ -57,33 +62,51 @@ void DeviceList::wol(const QString &mac)
     }
 }
 
+bool DeviceList::configureNetwork(const QString &broadcastAddress, int port)
+{
+    const bool configured = _wol.configure(broadcastAddress.toStdString(), port);
+    if (!configured)
+        qWarning() << "Invalid network configuration" << broadcastAddress << port;
+    return configured;
+}
+
 void DeviceList::remove(int index)
 {
     if (isValidIndex(index)) {
-        emit layoutAboutToBeChanged();
+        beginRemoveRows({}, index, index);
         _deviceInfo.remove(index);
-        emit layoutChanged();
+        endRemoveRows();
+        save();
     }
 }
 
 void DeviceList::append(const QString &name, const QString &mac)
 {
-    emit layoutAboutToBeChanged();
+    if (name.trimmed().isEmpty()) {
+        qWarning() << "Cannot append a device without a name";
+        return;
+    }
+    const int index = _deviceInfo.size();
+    beginInsertRows({}, index, index);
     _deviceInfo.append({.friendlyName = name, .macAddress = mac});
-    emit layoutChanged();
+    endInsertRows();
+    save();
 }
 
 void DeviceList::edit(int index, const QString &name, const QString &mac)
 {
     if (isValidIndex(index)) {
-        emit layoutAboutToBeChanged();
+        if (name.trimmed().isEmpty()) {
+            qWarning() << "Cannot edit a device without a name";
+            return;
+        }
         _deviceInfo[index] = { .friendlyName = name, .macAddress = mac };
-        emit layoutChanged();
+        const auto modelIndex = this->index(index);
+        emit dataChanged(modelIndex, modelIndex, {FriendlyName, MacAddress});
+        save();
     } else {
         qWarning() << "Invalid index" << index;
     }
-    std::thread th(&DeviceList::save, this);
-    th.detach();
 }
 
 QString DeviceList::friendlyName(int index) const
@@ -118,14 +141,18 @@ void DeviceList::save()
 void DeviceList::load()
 {
     QSettings settings(qApp->organizationName(), qApp->applicationName());
+    const bool hasSavedDeviceList = settings.contains("deviceInfo/size");
     int size = settings.beginReadArray("deviceInfo");
     _deviceInfo.clear();
-    emit layoutAboutToBeChanged();
     for (int i = 0; i < size; ++i) {
         settings.setArrayIndex(i);
         _deviceInfo.append({.friendlyName = settings.value("friendlyName").toString(),
                             .macAddress = settings.value("macAddress").toString()});
     }
-    emit layoutChanged();
     settings.endArray();
+
+    if (!hasSavedDeviceList) {
+        _deviceInfo = initialDevices;
+        save();
+    }
 }

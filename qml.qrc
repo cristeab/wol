@@ -8,5 +8,7 @@
         <file>qml/Style.qml</file>
         <file>qml/qmldir</file>
         <file>qml/EntryDialog.qml</file>
+        <file>qml/Settings.qml</file>
+        <file>qml/About.qml</file>
     </qresource>
 </RCC>

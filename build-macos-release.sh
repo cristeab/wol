@@ -2,11 +2,16 @@
 
 set -e
 
-QT_VER=6.10.1
+QT_VER=6.12.0
 QT_ROOT=$HOME/Qt/$QT_VER/macos
 
-rm -rf build
+BUILD=build
+rm -rf $BUILD
 
-cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=$QT_ROOT
-cmake --build build --target all
-cmake --build build --target pack
+cmake -S . -B $BUILD \
+    -G Ninja \
+    -DCMAKE_EXPORT_COMPILE_COMMANDS=ON \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_PREFIX_PATH=$QT_ROOT
+cmake --build $BUILD --target all
+cmake --build $BUILD --target pack

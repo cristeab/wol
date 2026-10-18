@@ -5,7 +5,7 @@ Wake on LAN application
 
 - cmake
 
-- Qt 6.10
+- Qt 6.12
 
 # Compilation
 

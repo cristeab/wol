@@ -23,6 +23,10 @@ Dialog {
             msgDlgProps.cancelCallback()
             msgDlgProps.cancelCallback = null
         }
+        msgDlgProps.title = ""
+        msgDlgProps.text = ""
+        msgDlgProps.acceptCallback = null
+        msgDlgProps.callbackArg = -1
     }
     title: msgDlgProps.title
     modal: true

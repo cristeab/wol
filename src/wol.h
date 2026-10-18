@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+#include <stdexcept>
 #include <string>
 #include <unistd.h>
 
@@ -7,6 +9,7 @@ class Wol
 {
 public:
     void send(const std::string& hardware_addr);
+    bool configure(const std::string& broadcastAddress, int port);
 private:
     class SocketHandle {
     public:
@@ -31,6 +34,6 @@ private:
     };
     std::string getEther(const std::string& hardwareAddr);
     unsigned getHexFromString(const std::string& s);
-    unsigned _port{60000};
-    unsigned int _bcast{0xFFFFFFFF};
+    std::uint16_t _port{60000};
+    std::uint32_t _bcast{0xFFFFFFFFu};
 };
