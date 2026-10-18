@@ -59,5 +59,23 @@ Item {
             horizontalAlignment: Text.AlignHCenter
             wrapMode: Text.WordWrap
         }
+
+        Label {
+            anchors.horizontalCenter: parent.horizontalCenter
+            topPadding: 10
+            text: qsTr("Copyright © 2021 Bogdan Eugen Cristea. All rights reserved.")
+            color: "#707878"
+            font.pixelSize: 12
+        }
+
+        Text {
+            anchors.horizontalCenter: parent.horizontalCenter
+            text: qsTr("<a href=\"https://github.com/cristeab/wol\">Project hosted on GitHub</a>")
+            textFormat: Text.RichText
+            color: "#8d9494"
+            linkColor: "#35c7bc"
+            font.pixelSize: 12
+            onLinkActivated: function(link) { Qt.openUrlExternally(link) }
+        }
     }
 }

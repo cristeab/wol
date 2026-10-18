@@ -20,6 +20,7 @@ file (GLOB_RECURSE SRCS src/*.cpp)
 qt6_add_resources (RSCS qml.qrc)
 
 add_executable ("${PROJECT_NAME}" MACOSX_BUNDLE ${SRCS} ${RSCS} "${CMAKE_SOURCE_DIR}/img/wol.icns")
+target_compile_definitions(${PROJECT_NAME} PRIVATE WOL_VERSION="${PROJECT_VERSION}")
 set_source_files_properties ("${CMAKE_SOURCE_DIR}/img/wol.icns"
     PROPERTIES MACOSX_PACKAGE_LOCATION "Resources")
 set_target_properties(${PROJECT_NAME} PROPERTIES

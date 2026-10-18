@@ -10,7 +10,7 @@ ApplicationWindow {
     minimumWidth: 760
     minimumHeight: 520
     color: "#171a1b"
-    title: Qt.application.name
+    title: Qt.application.name + " " + Qt.application.version
     property int pageIndex: 0
 
     Component.onCompleted: {
@@ -61,50 +61,9 @@ ApplicationWindow {
     }
 
     Rectangle {
-        id: titleBar
-        anchors.top: parent.top
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: 54
-        color: "#202526"
-        z: 2
-
-        Label {
-            anchors.centerIn: parent
-            text: qsTr("WOL")
-            color: "#f5f2ec"
-            font.bold: true
-            font.pixelSize: 17
-        }
-
-        Row {
-            anchors {
-                right: parent.right
-                rightMargin: 24
-                verticalCenter: parent.verticalCenter
-            }
-            spacing: 8
-
-            Rectangle {
-                width: 9
-                height: width
-                radius: width / 2
-                color: "#35c7bc"
-                anchors.verticalCenter: parent.verticalCenter
-            }
-            Label {
-                text: qsTr("LOCAL NETWORK")
-                color: "#a8acab"
-                font.pixelSize: 11
-                font.letterSpacing: 1.1
-            }
-        }
-    }
-
-    Rectangle {
         id: navigationRail
         anchors {
-            top: titleBar.bottom
+            top: parent.top
             left: parent.left
             bottom: parent.bottom
         }
@@ -220,11 +179,46 @@ ApplicationWindow {
                 }
             }
         }
+
+        Rectangle {
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+                leftMargin: 12
+                rightMargin: 12
+            }
+            height: 1
+            color: "#343a3b"
+        }
+
+        Row {
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+                margins: 24
+            }
+            spacing: 9
+
+            Rectangle {
+                width: 9
+                height: width
+                radius: width / 2
+                color: "#35c7bc"
+                anchors.verticalCenter: parent.verticalCenter
+            }
+            Label {
+                text: qsTr("Ready to broadcast")
+                color: "#8d9494"
+                font.pixelSize: 12
+            }
+        }
     }
 
     StackLayout {
         anchors {
-            top: titleBar.bottom
+            top: parent.top
             left: navigationRail.right
             right: parent.right
             bottom: parent.bottom
@@ -233,124 +227,160 @@ ApplicationWindow {
 
         Item {
             id: devicesPage
-            anchors.fill: parent
+            Layout.fillWidth: true
+            Layout.fillHeight: true
 
     Button {
         id: addButton
         anchors {
             top: parent.top
-            topMargin: 5
-            left: parent.left
-            leftMargin: Style.horizontalMargin
+            topMargin: 24
+            right: parent.right
+            rightMargin: 32
         }
-        text: qsTr("Add")
-        font.pointSize: Style.textPointSize
+        width: 132
+        height: 40
+        text: qsTr("+  Add device")
+        font.pixelSize: 14
         contentItem: Label {
             text: addButton.text
             font: addButton.font
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
-            color: Style.buttonPressedColor
+            color: "#f5f2ec"
             clip: true
         }
         onClicked: msgDlgProps.showEntry(qsTr("Add New Entry"), deviceList.append)
         background: Rectangle {
             radius: 5
-            color: addButton.down ? "#269d96" : "#35c7bc"
+            color: addButton.down ? "#2aaba2" : "transparent"
+            border.width: 1
+            border.color: addButton.down ? "#35c7bc" : "#4c5555"
         }
     }
 
-    Column {
-        id: header
-        spacing: Style.verticalMargin
+    Rectangle {
+        id: pageHeader
         anchors {
             top: parent.top
-            topMargin: Style.verticalMargin
-            horizontalCenter: parent.horizontalCenter
+            left: parent.left
+            right: parent.right
         }
+        height: 118
+        color: "transparent"
+
         Label {
-            id: wolLabel
-            horizontalAlignment: Text.AlignHCenter
-            text: qsTr("Wake on LAN")
-            font {
-                bold: true
-                pointSize: Style.headerPointSize
+            id: pageTitle
+            anchors {
+                left: parent.left
+                leftMargin: 32
+                top: parent.top
+                topMargin: 28
             }
+            text: qsTr("Saved devices")
+            color: "#f5f2ec"
+            font.bold: true
+            font.pixelSize: 30
         }
-        Item {
-            anchors.horizontalCenter: wolLabel.horizontalCenter
-            height: Style.buttonHeight
-            width: height
-            Image {
-                id: wolImg
-                anchors.fill: parent
-                source: "qrc:/img/cloud-on-off.svg"
-                fillMode: Image.PreserveAspectFit
-                mipmap: true
+
+        Label {
+            anchors {
+                left: pageTitle.left
+                top: pageTitle.bottom
+                topMargin: 6
             }
+            text: qsTr("Select a device to send a Wake-on-LAN packet.")
+            color: "#8d9494"
+            font.pixelSize: 13
+        }
+
+        Rectangle {
+            anchors {
+                left: parent.left
+                right: parent.right
+                bottom: parent.bottom
+                leftMargin: 32
+                rightMargin: 32
+            }
+            height: 1
+            color: "#343a3b"
         }
     }
     Label {
         visible: 0 === listView.count
         anchors {
-            top: header.bottom
-            topMargin: Style.verticalMargin
+            top: pageHeader.bottom
+            topMargin: 64
             left: parent.left
-            leftMargin: Style.horizontalMargin
+            leftMargin: 32
             right: parent.right
-            rightMargin: Style.horizontalMargin
+            rightMargin: 32
         }
+        color: "#8d9494"
         horizontalAlignment: Text.AlignHCenter
         wrapMode: Text.WordWrap
-        font.pointSize: Style.textPointSize
-        text: qsTr("Your MAC address list is empty.\nUse the add button above to add entries in this list.\nPress an item in the list to send a WOL packet.\nIn order to edit a list item swipe right, then press edit.\nIn order to delete a list item swipe left, then press delete.")
+        font.pixelSize: 14
+        text: qsTr("No saved devices yet.\nUse Add device to create your first entry.")
     }
     ListView {
         id: listView
-        readonly property int itemWidth: (listView.width - 2 * Style.horizontalMargin) / 2
         anchors {
-            top: header.bottom
-            topMargin: Style.verticalMargin
+            top: pageHeader.bottom
+            topMargin: 18
             bottom: parent.bottom
+            left: parent.left
+            right: parent.right
+            leftMargin: 24
+            rightMargin: 24
         }
         clip: true
         boundsBehavior: ListView.StopAtBounds
-        width: parent.width
         model: deviceList
         delegate: SwipeDelegate {
             id: delegateControl
             property bool blink: false
-            width: parent.width
-            height: Style.buttonHeight
-            Row {
+            property bool broadcasting: false
+            width: listView.width
+            height: 78
+
+            function wakeDevice() {
+                broadcastAnimation.restart()
+                broadcasting = true
+                wolTimer.running = true
+                deviceList.wol(macAddress)
+            }
+
+            background: Rectangle {
+                radius: 6
+                color: delegateControl.pressed ? "#2c3535" : "transparent"
+                border.width: delegateControl.pressed ? 1 : 0
+                border.color: "#35c7bc"
+            }
+
+            Column {
                 id: delegateRow
-                spacing: 2 * Style.horizontalMargin
                 anchors {
+                    left: parent.left
+                    leftMargin: 22
                     verticalCenter: parent.verticalCenter
-                    horizontalCenter: parent.horizontalCenter
                 }
                 Label {
-                    width: listView.itemWidth
-                    horizontalAlignment: Text.AlignRight
-                    verticalAlignment: Text.AlignVCenter
                     text: friendlyName
-                    font.pointSize: Style.textPointSize
+                    color: delegateControl.blink ? "#35c7bc" : "#f5f2ec"
+                    font.pixelSize: 16
                     clip: true
                     elide: Text.ElideRight
-                    color: delegateControl.blink ? Style.buttonPressedColor : Style.buttonReleasedColor
+                    width: Math.min(420, listView.width - 150)
                 }
                 Label {
-                    width: listView.itemWidth
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignVCenter
-                    text:  macAddress
+                    text: macAddress
+                    color: "#8d9494"
                     font {
-                        italic: true
-                        pointSize: Style.textPointSize
+                        family: "Courier New"
+                        pixelSize: 12
                     }
                     clip: true
                     elide: Text.ElideRight
-                    color: delegateControl.blink ? Style.buttonPressedColor : Style.buttonReleasedColor
                 }
             }
             Rectangle {
@@ -358,19 +388,71 @@ ApplicationWindow {
                 property alias pressed: delegateControl.pressed
                 color: "transparent"
                 anchors {
-                    left: delegateRow.left
-                    leftMargin: -Style.horizontalMargin
-                    right: delegateRow.right
-                    rightMargin: -Style.horizontalMargin
+                    left: parent.left
+                    right: parent.right
                     verticalCenter: delegateRow.verticalCenter
                 }
-                height: delegateRow.height + Style.verticalMargin
+                height: parent.height
                 z: -1
-                radius: 5
-                border {
-                    width: 1
-                    color: contentFrame.pressed ? "lightgray" : "transparent"
+            }
+
+            Button {
+                id: wakeButton
+                anchors {
+                    right: parent.right
+                    rightMargin: 22
+                    verticalCenter: parent.verticalCenter
                 }
+                width: 50
+                height: 50
+                onClicked: delegateControl.wakeDevice()
+                background: Rectangle {
+                    radius: width / 2
+                    color: wakeButton.down ? "#2aaba2" : "#35c7bc"
+                }
+                contentItem: Item {
+                    id: broadcastIconContainer
+                    anchors.fill: parent
+                    anchors.margins: 12
+
+                    Image {
+                        anchors.fill: parent
+                        source: "qrc:/img/broadcast.svg"
+                        fillMode: Image.PreserveAspectFit
+                        mipmap: true
+                    }
+                    Image {
+                        anchors.fill: parent
+                        source: "qrc:/img/broadcast-active.svg"
+                        fillMode: Image.PreserveAspectFit
+                        mipmap: true
+                        opacity: delegateControl.broadcasting ? 1 : 0
+                        Behavior on opacity {
+                            NumberAnimation { duration: 120 }
+                        }
+                    }
+                }
+                ToolTip.visible: hovered
+                ToolTip.text: qsTr("Wake device")
+            }
+            SequentialAnimation {
+                id: broadcastAnimation
+                loops: 3
+                NumberAnimation {
+                    target: broadcastIconContainer
+                    property: "scale"
+                    to: 1.2
+                    duration: 500
+                    easing.type: Easing.OutCubic
+                }
+                NumberAnimation {
+                    target: broadcastIconContainer
+                    property: "scale"
+                    to: 1.0
+                    duration: 500
+                    easing.type: Easing.InOutCubic
+                }
+                onStopped: delegateControl.broadcasting = false
             }
             Timer {
                 id: wolTimer
@@ -391,103 +473,34 @@ ApplicationWindow {
                 }
             }
             onClicked: {
-                wolTimer.running = true
-                deviceList.wol(macAddress)
+                delegateControl.wakeDevice()
             }
-            //swipe gestures handling
-            swipe.enabled: true
-            ListView.onRemove: SequentialAnimation {
-                PropertyAction {
-                    target: delegateControl
-                    property: "ListView.delayRemove"
-                    value: true
-                }
-                NumberAnimation {
-                    target: delegateControl
-                    property: "height"
-                    to: 0
-                    easing.type: Easing.InOutQuad
-                }
-                PropertyAction {
-                    target: delegateControl
-                    property: "ListView.delayRemove"
-                    value: false
-                }
+            swipe.enabled: false
+
+            MouseArea {
+                anchors.fill: parent
+                acceptedButtons: Qt.RightButton
+                onClicked: contextMenu.popup()
             }
-            swipe.right: Rectangle {
-                height: parent.height
-                width: deleteLabel.width
-                anchors.right: parent.right
-                color: SwipeDelegate.pressed ? Qt.darker(Style.swipeRemoveItemColor, 1.1) : Style.swipeRemoveItemColor
-                Column {
-                    SwipeDelegate.onClicked: {
-                        msgDlgProps.showInfo(qsTr("Delete Entry"), qsTr("Are you sure you want to delete ") + friendlyName + qsTr(" from the list."))
-                        msgDlgProps.acceptCallback = listView.model.remove
+
+            Menu {
+                id: contextMenu
+                title: friendlyName
+
+                MenuItem {
+                    text: qsTr("Edit %1").arg(friendlyName)
+                    onTriggered: {
+                        msgDlgProps.showEntry(qsTr("Edit Device"), deviceList.edit)
                         msgDlgProps.callbackArg = index
-                        msgDlgProps.cancelCallback = delegateControl.swipe.close
-                    }
-                    anchors.fill: parent
-                    spacing: 0
-                    Item {
-                        height: 5
-                        width: parent.width
-                    }
-                    Image {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        height: parent.height/2 - 6
-                        width: height
-                        source: "qrc:/img/trash-o.svg"
-                        fillMode: Image.PreserveAspectFit
-                        mipmap: true
-                    }
-                    Label {
-                        id: deleteLabel
-                        text: qsTr("Delete")
-                        font.pointSize: Style.textPointSize
-                        clip: true
-                        elide: Text.ElideRight
-                        verticalAlignment: Label.AlignVCenter
-                        topPadding: 3
-                        leftPadding: 12
-                        rightPadding: 12
                     }
                 }
-            }
-            swipe.left: Rectangle {
-                height: parent.height
-                width: editLabel.width
-                anchors.left: parent.left
-                color: SwipeDelegate.pressed ? Qt.darker(Style.swipeEditItemColor, 1.1) : Style.swipeEditItemColor
-                Column {
-                    SwipeDelegate.onClicked: {
-                        msgDlgProps.showEntry(qsTr("Edit Entry"), deviceList.edit)
+                MenuItem {
+                    text: qsTr("Remove %1").arg(friendlyName)
+                    onTriggered: {
+                        msgDlgProps.showInfo(qsTr("Remove Device"),
+                                             qsTr("Are you sure you want to remove ") + friendlyName + qsTr(" from the list?"))
+                        msgDlgProps.acceptCallback = deviceList.remove
                         msgDlgProps.callbackArg = index
-                        msgDlgProps.cancelCallback = delegateControl.swipe.close
-                    }
-                    anchors.fill: parent
-                    spacing: 0
-                    Item {
-                        height: 5
-                        width: parent.width
-                    }
-                    Image {
-                        anchors.horizontalCenter: parent.horizontalCenter
-                        height: parent.height/2 - 6
-                        width: height
-                        source: "qrc:/img/trash-o.svg"
-                        fillMode: Image.PreserveAspectFit
-                        mipmap: true
-                    }
-                    Label {
-                        id: editLabel
-                        text: qsTr("Edit")
-                        font.pointSize: Style.textPointSize
-                        clip: true
-                        elide: Text.ElideRight
-                        verticalAlignment: Label.AlignVCenter
-                        topPadding: 3
-                        leftPadding: 12
-                        rightPadding: 12
                     }
                 }
             }

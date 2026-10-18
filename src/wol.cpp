@@ -4,8 +4,10 @@
 #include <cerrno>
 #include <cctype>
 #include <cstring>
+#include <chrono>
 #include <stdexcept>
 #include <system_error>
+#include <thread>
 
 bool Wol::configure(const std::string& broadcastAddress, int port)
 {
@@ -51,9 +53,23 @@ void Wol::send(const std::string& hardware_addr)
                      .sin_addr = {.s_addr = _bcast}};
 
     // Send the packet out.
-    if (sendto(packet.get(), message.data(), message.length(), 0,
-        reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) < 0)
-        throw std::system_error(errno, std::generic_category(), "Failed to send packet");
+    int lastError = 0;
+    for (int attempt = 0; attempt < 3; ++attempt) {
+        if (sendto(packet.get(), message.data(), message.length(), 0,
+            reinterpret_cast<sockaddr*>(&addr), sizeof(addr)) >= 0)
+            return;
+
+        lastError = errno;
+        const bool transientRouteError = lastError == EHOSTUNREACH ||
+                                         lastError == ENETUNREACH ||
+                                         lastError == ENETDOWN;
+        if (!transientRouteError || attempt == 2)
+            break;
+
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+
+    throw std::system_error(lastError, std::generic_category(), "Failed to send packet");
 }
 
 std::string Wol::getEther(const std::string& hardwareAddr)

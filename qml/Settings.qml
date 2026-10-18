@@ -1,12 +1,12 @@
 import QtQuick 2.14
 import QtQuick.Controls 2.14
 import QtQuick.Layouts 1.14
-import Qt.labs.settings 1.1 as Labs
+import QtCore as Core
 
 Item {
     id: settingsPage
 
-    Labs.Settings {
+    Core.Settings {
         id: storedSettings
         category: "Application"
         property string broadcastAddress: "255.255.255.255"

@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
     QGuiApplication app(argc, argv);
     app.setOrganizationName("Bogdan C.");
     app.setApplicationName("WOL");
+    app.setApplicationVersion(QStringLiteral(WOL_VERSION));
 
     QQmlApplicationEngine engine;
     auto *devList = new DeviceList(&engine);

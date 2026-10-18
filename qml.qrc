@@ -2,7 +2,8 @@
     <qresource prefix="/">
         <file>qtquickcontrols2.conf</file>
         <file>qml/main.qml</file>
-        <file>img/cloud-on-off.svg</file>
+        <file>img/broadcast.svg</file>
+        <file>img/broadcast-active.svg</file>
         <file>img/trash-o.svg</file>
         <file>qml/MessageDialog.qml</file>
         <file>qml/Style.qml</file>

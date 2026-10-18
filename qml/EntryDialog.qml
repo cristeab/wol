@@ -3,8 +3,8 @@ import QtQuick.Controls 2.14
 
 Dialog {
     id: control
-    implicitWidth: Style.dialogWidth
-    implicitHeight: Style.dialogHeight
+    implicitWidth: 520
+    implicitHeight: 280
     x: (appWin.width-width)/2
     y: (appWin.height-height)/2
     z: 2
@@ -66,7 +66,8 @@ Dialog {
         TextField {
             id: nameEdit
             width: dlgGrid.itemWidth
-            font.pointSize: Style.textPointSize
+            font.pointSize: Style.textPointSize + 2
+            horizontalAlignment: Text.AlignHCenter
             placeholderText: qsTr("Friendly name")
             text: deviceList.friendlyName(msgDlgProps.callbackArg)
             maximumLength: 128
@@ -86,7 +87,8 @@ Dialog {
         TextField {
             id: macEdit
             width: dlgGrid.itemWidth
-            font.pointSize: Style.textPointSize
+            font.pointSize: Style.textPointSize + 2
+            horizontalAlignment: Text.AlignHCenter
             placeholderText: qsTr("hh:hh:hh:hh:hh:hh")
             text: deviceList.macAddress(msgDlgProps.callbackArg)
             maximumLength: 17
